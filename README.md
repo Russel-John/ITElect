@@ -19,6 +19,117 @@ Install or prepare these before running the project:
 - XAMPP or another local PHP environment
 - Postman
 
+## After Cloning on School PC
+
+After cloning this project from GitHub on the school PC, the `vendor` folder and `.env` file will usually be missing. This is normal because those files are not usually pushed to GitHub.
+
+### Step 1: Clone the Repository
+
+Open PowerShell or Command Prompt, then run:
+
+```bash
+git clone YOUR_REPOSITORY_URL
+```
+
+Go inside the project folder:
+
+```bash
+cd ITElect
+```
+
+If you cloned it inside XAMPP, the folder may be:
+
+```bash
+cd C:\xampp\htdocs\ITElect
+```
+
+### Step 2: Install Dependencies
+
+Run:
+
+```bash
+composer install
+```
+
+This recreates the missing `vendor` folder.
+
+### Step 3: Create `.env`
+
+Run:
+
+```bash
+copy .env.example .env
+```
+
+If it says the file already exists, you can continue.
+
+### Step 4: Generate App Key
+
+Run:
+
+```bash
+php artisan key:generate
+```
+
+### Step 5: Create SQLite Database File
+
+If you are using PowerShell, run:
+
+```bash
+New-Item -ItemType File database\database.sqlite -Force
+```
+
+If you are using Command Prompt, run:
+
+```cmd
+type nul > database\database.sqlite
+```
+
+### Step 6: Run Migrations
+
+Run:
+
+```bash
+php artisan migrate
+```
+
+This creates the database tables.
+
+### Step 7: Start the API Server
+
+Run:
+
+```bash
+php artisan serve
+```
+
+Use this URL in Postman:
+
+```text
+http://127.0.0.1:8000/api
+```
+
+Example endpoint:
+
+```text
+http://127.0.0.1:8000/api/products
+```
+
+### Quick School PC Setup Commands
+
+Use this if you want the short version:
+
+```bash
+git clone YOUR_REPOSITORY_URL
+cd ITElect
+composer install
+copy .env.example .env
+php artisan key:generate
+New-Item -ItemType File database\database.sqlite -Force
+php artisan migrate
+php artisan serve
+```
+
 ## Step 1: Open the Project Folder
 
 Open a terminal or PowerShell, then go to the project folder:
@@ -288,6 +399,205 @@ http://127.0.0.1:8000/api/transactions
 7. Update the product using `PUT` or `PATCH /api/products/{id}`.
 8. Delete the product using `DELETE /api/products/{id}`.
 
+## Running This Project on Another PC
+
+When you move this Laravel project to another computer, expect that some generated files may be missing or different. This is normal.
+
+### What to Expect
+
+- The `vendor` folder may be missing.
+- The `.env` file may be missing.
+- The Laravel app key may be empty.
+- The SQLite database file may be missing.
+- The database tables may not exist yet.
+- The other PC may not have PHP, Composer, or required PHP extensions installed.
+- Port `8000` may already be used by another program.
+
+### Full Setup Fix for Another PC
+
+After copying the project folder to the other PC, run these commands from inside the project folder:
+
+```bash
+cd C:\xampp\htdocs\ITElect
+composer install
+copy .env.example .env
+php artisan key:generate
+```
+
+Create the SQLite database file if it does not exist:
+
+```bash
+New-Item -ItemType File database\database.sqlite -Force
+```
+
+Then run migrations:
+
+```bash
+php artisan migrate
+```
+
+Finally, start the server:
+
+```bash
+php artisan serve
+```
+
+Use this in Postman:
+
+```text
+http://127.0.0.1:8000/api
+```
+
+### If `copy .env.example .env` Says the File Already Exists
+
+That is okay. It means the `.env` file is already there. Continue with:
+
+```bash
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+### If `composer` Is Not Recognized
+
+Composer is not installed or is not added to the system PATH.
+
+Fix:
+
+1. Install Composer from `https://getcomposer.org/download/`.
+2. Close and reopen the terminal.
+3. Run:
+
+```bash
+composer --version
+```
+
+If it shows a Composer version, run:
+
+```bash
+composer install
+```
+
+### If `php` Is Not Recognized
+
+PHP is not installed or XAMPP PHP is not added to the system PATH.
+
+Fix:
+
+1. Install XAMPP.
+2. Add this folder to the system PATH:
+
+```text
+C:\xampp\php
+```
+
+3. Close and reopen the terminal.
+4. Run:
+
+```bash
+php --version
+```
+
+If it shows PHP 8.2 or higher, continue the setup.
+
+### If SQLite Has an Error
+
+If you see an error about SQLite, `pdo_sqlite`, or database driver not found, enable SQLite in PHP.
+
+Fix:
+
+1. Open this file:
+
+```text
+C:\xampp\php\php.ini
+```
+
+2. Find these lines:
+
+```ini
+;extension=pdo_sqlite
+;extension=sqlite3
+```
+
+3. Remove the semicolon `;` from both lines:
+
+```ini
+extension=pdo_sqlite
+extension=sqlite3
+```
+
+4. Save the file.
+5. Restart the terminal.
+6. Run:
+
+```bash
+php artisan migrate
+```
+
+### If `database/database.sqlite` Is Missing
+
+Create the database file:
+
+```bash
+New-Item -ItemType File database\database.sqlite -Force
+```
+
+Then run:
+
+```bash
+php artisan migrate
+```
+
+### If Tables Are Missing
+
+Run:
+
+```bash
+php artisan migrate
+```
+
+If you want to reset the database and remove existing data, run:
+
+```bash
+php artisan migrate:fresh
+```
+
+### If Port 8000 Is Already Used
+
+Run Laravel on another port:
+
+```bash
+php artisan serve --port=8001
+```
+
+Then use this base URL in Postman:
+
+```text
+http://127.0.0.1:8001/api
+```
+
+### If You Get `500 Internal Server Error`
+
+Run these commands:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+php artisan migrate
+```
+
+Then start the server again:
+
+```bash
+php artisan serve
+```
+
+If the error continues, check the Laravel log file:
+
+```text
+storage/logs/laravel.log
+```
+
 ## HTTP Status Codes and Error Handling
 
 The API returns JSON responses for errors.
@@ -359,7 +669,7 @@ php artisan test
 Expected result:
 
 ```text
-Tests: 5 passed
+Tests: 9 passed
 ```
 
 ## Common Problems
