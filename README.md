@@ -16,7 +16,8 @@ Install or prepare these before running the project:
 
 - PHP 8.2 or higher
 - Composer
-- XAMPP or another local PHP environment
+- XAMPP (includes Apache and MySQL)
+- MySQL (itelect database)
 - Postman
 
 ## After Cloning on School PC
@@ -71,19 +72,13 @@ Run:
 php artisan key:generate
 ```
 
-### Step 5: Create SQLite Database File
+### Step 5: Create MySQL Database
 
-If you are using PowerShell, run:
-
-```bash
-New-Item -ItemType File database\database.sqlite -Force
-```
-
-If you are using Command Prompt, run:
-
-```cmd
-type nul > database\database.sqlite
-```
+1. Open **XAMPP Control Panel** and click **Start** for both Apache and MySQL.
+2. Click **Admin** next to MySQL to open **phpMyAdmin**.
+3. Create a new database named `itelect`.
+    - **Using the UI:** Click "New" on the left, type `itelect`, and click "Create".
+    - **Using SQL:** Click the "SQL" tab and run: `CREATE DATABASE itelect;`
 
 ### Step 6: Run Migrations
 
@@ -125,7 +120,6 @@ cd ITElect
 composer install
 copy .env.example .env
 php artisan key:generate
-New-Item -ItemType File database\database.sqlite -Force
 php artisan migrate
 php artisan serve
 ```
@@ -170,21 +164,21 @@ This sets the Laravel `APP_KEY` value inside `.env`.
 
 ## Step 5: Configure the Database
 
-This project uses SQLite by default.
+This project uses MySQL by default.
 
-In `.env`, make sure this line exists:
+1. Open **XAMPP Control Panel** and ensure MySQL is **Started**.
+2. Open **phpMyAdmin** (usually at `http://localhost/phpmyadmin`).
+3. Create an empty database named `itelect`.
+4. In your `.env` file, ensure these lines match your MySQL setup:
 
 ```env
-DB_CONNECTION=sqlite
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=itelect
+DB_USERNAME=root
+DB_PASSWORD=
 ```
-
-Then make sure this file exists:
-
-```text
-database/database.sqlite
-```
-
-If the file does not exist, create it manually inside the `database` folder.
 
 ## Step 6: Run Database Migrations
 
@@ -408,7 +402,8 @@ When you move this Laravel project to another computer, expect that some generat
 - The `vendor` folder may be missing.
 - The `.env` file may be missing.
 - The Laravel app key may be empty.
-- The SQLite database file may be missing.
+- The MySQL server may not be running.
+- The `itelect` database may not have been created yet.
 - The database tables may not exist yet.
 - The other PC may not have PHP, Composer, or required PHP extensions installed.
 - Port `8000` may already be used by another program.
@@ -424,11 +419,7 @@ copy .env.example .env
 php artisan key:generate
 ```
 
-Create the SQLite database file if it does not exist:
-
-```bash
-New-Item -ItemType File database\database.sqlite -Force
-```
+Ensure MySQL is running and you have created the `itelect` database.
 
 Then run migrations:
 
@@ -500,9 +491,9 @@ php --version
 
 If it shows PHP 8.2 or higher, continue the setup.
 
-### If SQLite Has an Error
+### If MySQL Has an Error
 
-If you see an error about SQLite, `pdo_sqlite`, or database driver not found, enable SQLite in PHP.
+If you see an error about MySQL, `pdo_mysql`, or database driver not found, ensure the MySQL extension is enabled in PHP.
 
 Fix:
 
@@ -512,38 +503,36 @@ Fix:
 C:\xampp\php\php.ini
 ```
 
-2. Find these lines:
+2. Find this line:
 
 ```ini
-;extension=pdo_sqlite
-;extension=sqlite3
+;extension=pdo_mysql
 ```
 
-3. Remove the semicolon `;` from both lines:
+3. Remove the semicolon `;` from the line:
 
 ```ini
-extension=pdo_sqlite
-extension=sqlite3
+extension=pdo_mysql
 ```
 
 4. Save the file.
-5. Restart the terminal.
+5. Restart your Apache/MySQL server if using XAMPP.
 6. Run:
 
 ```bash
 php artisan migrate
 ```
 
-### If `database/database.sqlite` Is Missing
+### If Database Is Missing
 
-Create the database file:
+Open **phpMyAdmin** and create a database named `itelect`.
 
-```bash
-New-Item -ItemType File database\database.sqlite -Force
+**SQL Query:**
+```sql
+CREATE DATABASE itelect;
 ```
 
-Then run:
-
+Then run migrations:
 ```bash
 php artisan migrate
 ```
